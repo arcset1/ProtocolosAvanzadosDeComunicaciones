@@ -1,3 +1,13 @@
+#Comandos principales 
+
+git add. 
+git commit -m "mensaje de la descripción del cambio"
+git push --> Empuja los cambios hechos al repositorio de GitHub 
+
+GituHub es como una memoria USB compartida.
+
+
+
 Configuración inicial
 git config --global user.name "Tu Nombre"
 Configura tu nombre de usuario.
