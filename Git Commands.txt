@@ -1,0 +1,92 @@
+Configuración inicial
+git config --global user.name "Tu Nombre"
+Configura tu nombre de usuario.
+
+git config --global user.email "tuemail@example.com"
+Configura tu correo electrónico.
+
+Comandos básicos de Git
+git init
+Inicializa un nuevo repositorio Git en un directorio.
+
+git clone URL_DEL_REPO
+Clona un repositorio remoto en tu computadora.
+
+git status
+Muestra el estado actual del repositorio.
+
+git add archivo.txt
+Agrega un archivo específico al área de preparación (staging).
+
+git add .
+Agrega todos los archivos modificados al área de preparación.
+
+git commit -m "Mensaje del commit"
+Guarda los cambios en el historial del repositorio.
+
+git commit --amend -m "Nuevo mensaje"
+Modifica el último commit (si aún no ha sido enviado).
+
+git log
+Muestra el historial de commits.
+
+Trabajo con ramas (branches)
+git branch
+Lista las ramas disponibles en el repositorio.
+
+git branch nombre-rama
+Crea una nueva rama.
+
+git checkout nombre-rama
+Cambia a otra rama.
+
+git switch nombre-rama
+Alternativa moderna a checkout para cambiar de rama.
+
+git checkout -b nombre-rama
+Crea y cambia a una nueva rama en un solo paso.
+
+git merge nombre-rama
+Fusiona una rama con la rama actual.
+
+git branch -d nombre-rama
+Elimina una rama local.
+
+Sincronización con GitHub
+git remote add origin URL_DEL_REPO
+Conecta el repositorio local con GitHub.
+
+git push -u origin main
+Envía los cambios locales a GitHub (rama main).
+
+git push
+Sube los cambios al repositorio remoto.
+
+git pull
+Descarga cambios del repositorio remoto y los fusiona con la rama actual.
+
+git fetch
+Descarga cambios remotos sin fusionarlos automáticamente.
+
+Resolución de conflictos
+git merge --abort
+Cancela un merge en conflicto.
+
+git reset --hard HEAD
+Deshace todos los cambios no confirmados.
+
+git revert ID_DEL_COMMIT
+Revierte un commit específico creando un nuevo commit.
+
+Otras operaciones útiles
+git stash
+Guarda temporalmente cambios sin hacer un commit.
+
+git stash pop
+Recupera los cambios guardados con stash.
+
+git reset --soft HEAD~1
+Deshace el último commit pero mantiene los cambios en staging.
+
+git reset --hard HEAD~1
+Deshace el último commit y elimina los cambios.
