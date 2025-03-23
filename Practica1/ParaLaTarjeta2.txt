@@ -1,0 +1,96 @@
+#include <msp430fr2433.h>
+
+void main(void)
+{
+    WDTCTL = WDTPW | WDTHOLD;   // Detener el watchdog timer
+
+    // Configurar P1.0 como salida y activar pull-up
+    P1DIR |= BIT0;              // Configurar P1.0 como salida (LED)
+    P1OUT |= BIT0;              // Habilitar pull-up (el LED comenzará apagado)
+    P1REN |= BIT0;              // Activar la resistencia pull-up en P1.0
+
+    // Configurar UART en los pines de conexión al PC (P1.6 RX, P1.7 TX)
+    P1SEL0 |= BIT6 | BIT7;      // P1.6 como RX y P1.7 como TX para eUSCI_A0
+
+    UCA0CTLW0 |= UCSWRST;       // Habilitar reset del módulo UART
+    UCA0CTLW0 |= UCSSEL__SMCLK; // Seleccionar SMCLK como fuente de reloj
+
+    // Configurar baud rate para 9600 baudios con SMCLK = 1MHz
+    UCA0BR0 = 6;
+    UCA0BR1 = 0;
+    UCA0MCTLW = 0x2081;         // Modulación para 9600 baudios
+
+    UCA0CTLW0 &= ~UCSWRST;      // Deshabilitar el reset (activar UART)
+    UCA0IE |= UCRXIE;           // Habilitar interrupción de recepción UART
+
+    __bis_SR_register(GIE);     // Habilitar interrupciones globales
+
+    while (1)
+    {
+        // Esperar a recibir un dato antes de encender el LED
+        if (UCA0RXBUF == 'a')
+            P1OUT &= ~BIT0;      // Encender LED (activo en bajo por pull-up)
+        else
+            P1OUT |= BIT0;       // Apagar LED
+    }
+}
+
+// Rutina de interrupción de recepción UART
+#pragma vector=EUSCI_A0_VECTOR
+__interrupt void EUSCI_A0_ISR(void)
+{
+    if (UCA0IFG & UCRXIFG) // Verificar si hay datos en RX
+    {
+        while (!(UCA0IFG & UCTXIFG));  // Esperar a que el buffer TX esté listo
+        UCA0TXBUF = UCA0RXBUF;         // Enviar de vuelta el carácter recibido (eco)
+    }
+}
+
+----------------------------------------------
+
+#include <msp430fr2433.h>
+
+void main(void)
+{
+    WDTCTL = WDTPW | WDTHOLD;   // Detener el watchdog timer
+
+    // Configurar P1.0 como salida y activar pull-up
+    P1DIR |= BIT0;              // Configurar P1.0 como salida (LED)
+    P1OUT |= BIT0;              // Habilitar pull-up (el LED comenzará apagado)
+    P1REN |= BIT0;              // Activar la resistencia pull-up en P1.0
+
+    // Configurar UART
+    P1SEL0 |= BIT4 | BIT5;      // Configurar P1.4 (TX) y P1.5 (RX) para UART
+    UCA0CTLW0 |= UCSWRST;       // Habilitar el reset del módulo UART
+    UCA0CTLW0 |= UCSSEL__SMCLK; // Seleccionar SMCLK como fuente de reloj
+
+    // Configurar baud rate para 9600 baudios con SMCLK = 1MHz
+    UCA0BR0 = 6;
+    UCA0BR1 = 0;
+    UCA0MCTLW = 0x2081;         // Modulación para 9600 baudios
+
+    UCA0CTLW0 &= ~UCSWRST;      // Deshabilitar el reset (activar UART)
+    UCA0IE |= UCRXIE;           // Habilitar interrupción de recepción UART
+
+    __bis_SR_register(GIE);     // Habilitar interrupciones globales
+
+    while (1)
+    {
+        if (UCA0RXBUF == 'a')
+            P1OUT &= ~BIT0;       // Encender LED (activo en bajo por la resistencia pull-up)
+        else
+            P1OUT |= BIT0;        // Apagar LED (pull-up lo mantiene en alto)
+    }
+}
+
+// Rutina de interrupción de recepción UART
+#pragma vector=EUSCI_A0_VECTOR
+__interrupt void EUSCI_A0_ISR(void)
+{
+    if (UCA0IFG & UCRXIFG) // Verificar si hay datos en RX
+    {
+        while (!(UCA0IFG & UCTXIFG));  // Esperar a que el buffer TX esté listo
+        UCA0TXBUF = UCA0RXBUF;         // Enviar de vuelta el carácter recibido (eco)
+    }
+}
+
